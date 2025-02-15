@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import $ from 'jquery';
 import { CForm, CFormInput, CFormLabel, CButton } from '@coreui/react';
 
-const UserForm = ({ selectedUser, onFormSubmit, onReset, onSuccess }) => {
+const UserForm = ({ selectedUser, onSuccess }) => {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -32,7 +32,22 @@ const UserForm = ({ selectedUser, onFormSubmit, onReset, onSuccess }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // please submit from url backend
+
+        try {
+            const response = fetch("http://localhost:3000/api/users" + (selectedUser ? `/${selectedUser.id}` : ""), {
+            method: selectedUser ? "PUT" : "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
+
+        const result = response.json();
+        console.log("Success:", result);
+        onSuccess(result); // Callback setelah berhasil submit
+        } catch (error) {
+            console.error("Error:", error);
+        }
     };
 
     const resetForm = () => {
@@ -45,7 +60,6 @@ const UserForm = ({ selectedUser, onFormSubmit, onReset, onSuccess }) => {
 
     const handleReset = () => {
         resetForm();
-        onReset();
     };
 
     return (
@@ -98,7 +112,7 @@ const UserForm = ({ selectedUser, onFormSubmit, onReset, onSuccess }) => {
                     />
                 </div>
                 <CButton type="submit" color="primary">{selectedUser ? 'Update' : 'Submit'}</CButton>
-                <CButton type="button" color="secondary">Reset</CButton>
+                <CButton type="button" color="secondary" onClick={resetForm}>Reset</CButton>
             </CForm>
         </div>
     );
