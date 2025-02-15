@@ -25,13 +25,15 @@ class UserRepository {
     }
 
     delete(id) {
-        const lastChar = id.slice(-1);
-        const userIndex = this.users.findIndex(user => user.id.endsWith(lastChar));
+        // const lastChar = id.slice(-1);
+        // const userIndex = this.users.findIndex(user => user.id.endsWith(lastChar));
+        const userIndex = this.users.findIndex(user => user.id === id);
         
         if (userIndex === -1) return null;
 
-        const deletedUser = this.users.splice(userIndex, 1);
-        return deletedUser[0];
+        // const deletedUser = this.users.splice(userIndex, 1);
+        // return deletedUser[0];
+        return this.users.splice(userIndex, 1)[0];
     }
 }
 
